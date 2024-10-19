@@ -1,39 +1,22 @@
-// Task Constructor
-class Task {
-    constructor(id, title, description, status = 'pending') {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.status = status;
-    }
-}
+// components/TaskList.js
+
+import { Task } from './Task.js';
+import { showNotification } from './Notification.js';
+import { displayTaskDetails, clearTaskDetails } from './TaskDetails.js';
 
 let tasks = [];
 let taskIdCounter = 1; // Counter for unique task IDs
 
-// Event listener for the form submission
-document.getElementById('taskForm').addEventListener('submit', function (e) {
-    e.preventDefault(); // Prevent the default form submission
-    const title = document.getElementById('taskTitle').value.trim(); // Trim whitespace
-    const description = document.getElementById('taskDescription').value.trim(); // Trim whitespace
-
-    // Input validation
-    if (!title || !description) {
-        showNotification('Please enter both title and description.'); // Show notification if inputs are empty
-        return;
-    }
-
-    // Add a new task
+// Function to add a new task
+export function addTask(title, description) {
     const newTask = new Task(taskIdCounter++, title, description); // Increment taskIdCounter
     tasks.push(newTask);
     showNotification('Task added!'); // Show notification for task added
-
     renderTasks(); // Re-render the task list
-    this.reset(); // Clear the form inputs
-});
+}
 
-// Render the tasks in the table
-function renderTasks() {
+// Function to render the tasks in the table
+export function renderTasks() {
     const taskTableBody = document.getElementById('taskTable').getElementsByTagName('tbody')[0];
     taskTableBody.innerHTML = ''; // Clear the table body
 
@@ -93,44 +76,10 @@ function renderTasks() {
     });
 }
 
-// Function to show notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.classList.add('notification');
-    notification.innerText = message;
-
-    document.body.appendChild(notification);
-
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
-// Function to display task details
-function displayTaskDetails(task) {
-    const detailsSection = document.getElementById('taskDetails');
-    detailsSection.innerHTML = `
-        <h2>Task Details</h2>
-        <p><strong>Title:</strong> ${task.title}</p>
-        <p><strong>Description:</strong> ${task.description}</p>
-        <p><strong>Status:</strong> ${task.status.charAt(0).toUpperCase() + task.status.slice(1)}</p>
-    `;
-}
-
 // Function to delete a task
-function deleteTask(index) {
+export function deleteTask(index) {
     tasks.splice(index, 1); // Remove task from tasks array
     showNotification('Task deleted!'); // Show notification for task deletion
     renderTasks(); // Re-render the task list
     clearTaskDetails(); // Clear the task details section
-}
-
-// Function to clear task details
-function clearTaskDetails() {
-    const detailsSection = document.getElementById('taskDetails');
-    detailsSection.innerHTML = `
-        <h2>Task Details</h2>
-        <p>Select a task to see its details.</p>
-    `;
 }
